@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: runtime-bootstrap
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: <TU_REPO_URL>
+    targetRevision: main
+    path: gitops/apps/runtime-bootstrap
+  destination:
+    name: apigee-runtime
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  syncOptions:
+  - CreateNamespace=true
