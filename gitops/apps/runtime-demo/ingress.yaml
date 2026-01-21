@@ -1,18 +1,10 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
 metadata:
-  name: demo-ingress
-  namespace: demo
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
 spec:
-  tls:
-  - hosts:
-    - demo.local
-    secretName: demo-tls
   rules:
   - host: demo.local
     http:
