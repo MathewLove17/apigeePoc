@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: <TU_REPO_URL>
+    repoURL: https://github.com/MathewLove17/apigeePoc.git
     targetRevision: main
     path: gitops/apps/runtime-bootstrap
   destination:
@@ -16,5 +16,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
-  syncOptions:
-  - CreateNamespace=true
+    syncOptions:
+    - CreateNamespace=true
