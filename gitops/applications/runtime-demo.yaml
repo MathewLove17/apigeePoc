@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: runtime-demo
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/MathewLove17/apigeePoc.git
+    targetRevision: main
+    path: gitops/apps/runtime-demo
+  destination:
+    name: apigee-runtime
+    namespace: demo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
