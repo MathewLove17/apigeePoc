@@ -13,7 +13,7 @@ spec:
       values: |
         clusterName: eks-apigee
         region: eu-west-1
-        vpcId: vpc-07fa9c50a703695d8
+        vpcId: vpc-08f25f957e0a6825c
 
         replicaCount: 2
 
