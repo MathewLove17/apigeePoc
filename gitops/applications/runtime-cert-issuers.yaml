@@ -10,7 +10,7 @@ spec:
     targetRevision: main
     path: gitops/apps/runtime-cert-issuers
   destination:
-    name: apigee-runtime
+    name: eks-apigee
     namespace: platform
   syncPolicy:
     automated:

@@ -13,7 +13,7 @@ spec:
       values: |
         installCRDs: true
   destination:
-    name: apigee-runtime
+    name: eks-apigee
     namespace: platform
   syncPolicy:
     automated:

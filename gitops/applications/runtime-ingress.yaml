@@ -23,7 +23,7 @@ spec:
           annotations:
             eks.amazonaws.com/role-arn: arn:aws:iam::386648197017:role/eks-apigee-aws-lbc
   destination:
-    name: apigee-runtime
+    name: eks-apigee
     namespace: kube-system
   syncPolicy:
     automated:
