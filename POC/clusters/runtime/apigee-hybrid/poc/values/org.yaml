@@ -11,4 +11,4 @@ gcp:
   projectID: "pocv2-485612"
   serviceAccountSecret:
     name: "apigee-gcp-sa"
-    key: "apigee-nonprod.json"
+    key: "service-account.json"
