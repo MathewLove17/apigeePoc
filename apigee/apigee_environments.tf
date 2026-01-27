@@ -1,8 +1,5 @@
 resource "google_apigee_environment" "env" {
-  org_id = var.gcp_project_id
+  # MUY importante: usar el ID de la org para que el provider forme bien la URL
+  org_id = google_apigee_organization.hybrid_org.id
   name   = var.apigee_environment
-
- depends_on = [
-    google_apigee_organization.hybrid_org
-  ]
 }

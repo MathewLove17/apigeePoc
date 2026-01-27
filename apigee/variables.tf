@@ -1,22 +1,24 @@
 variable "gcp_project_id" {
   type        = string
-  description = "ID del proyecto de GCP donde se habilitan las APIs para Apigee hybrid."
+  description = "Project ID de GCP (y también ORG_NAME en Apigee)."
 }
+
 variable "analytics_region" {
   type        = string
   description = "Región para Apigee Analytics (ej: europe-west1)."
 }
+
 variable "apigee_environment" {
-  description = "Nombre del environment de Apigee"
   type        = string
+  description = "Nombre del environment (ej: test)."
 }
 
 variable "apigee_envgroup" {
-  description = "Nombre del environment group"
   type        = string
+  description = "Nombre del envgroup (ej: hybrid-group)."
 }
 
 variable "apigee_hostnames" {
-  description = "Lista de hostnames para el environment group"
   type        = list(string)
+  description = "Hostnames del envgroup (ej: api.example.com)."
 }

@@ -1,15 +1,18 @@
 terraform {
   required_version = ">= 1.5.0"
+
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = ">= 5.0"
+      version = "= 7.16.0"
+    }
+    time = {
+      source  = "hashicorp/time"
+      version = ">= 0.9"
     }
   }
 }
 
 provider "google" {
   project = var.gcp_project_id
-  # Si usas credenciales por env var:
-  # export GOOGLE_APPLICATION_CREDENTIALS=/path/key.json
 }
