@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apigee-ingress-manager
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  project: default
+
+  sources:
+    - repoURL: oci://us-docker.pkg.dev/apigee-release/apigee-hybrid-helm-charts
+      chart: apigee-ingress-manager
+      targetRevision: 1.16.0
+      helm:
+        valueFiles:
+          - $values/POC/clusters/runtime/apigee-hybrid/poc/values/ingress-manager.yaml
+
+    - repoURL: https://github.com/MathewLove17/apigeePoc.git
+      targetRevision: main
+      ref: values
+
+  destination:
+    server: https://apigeepoc-xoek8s12.hcp.westeurope.azmk8s.io:443
+    namespace: apigee
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
