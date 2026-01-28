@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: apigee-oci-repo
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  type: helm
+  url: oci://us-docker.pkg.dev/apigee-release/apigee-hybrid-helm-charts
+  enableOCI: "true"
