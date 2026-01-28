@@ -1,9 +1,0 @@
-contractProvider: https://apigee.googleapis.com
-org: pocv2-485612
-
-gcp:
-  region: europe-west1
-  projectID: pocv2-485612
-  projectIDRuntime: pocv2-485612
-
-namespace: apigee
