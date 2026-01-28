@@ -14,7 +14,7 @@ spec:
     directory:
       recurse: false
   destination:
-    server: https://apigeepoc-xoek8s12.hcp.westeurope.azmk8s.io:443
+    name: apigeepo
     namespace: apigee
   syncPolicy:
     automated:
