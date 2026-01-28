@@ -1,13 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apigee-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
 
-  source:
-    repoURL: oci://us-docker.pkg.dev/apigee-release/apigee-hybrid-helm-charts
-    chart: apigee-operator
-    targetRevision: 1.16.0
-    helm:
-      valueFiles:
-        - https://raw.githubusercontent.com/MathewLove17/apigeePoc/main/POC/clusters/runtime/apigee-hybrid/poc/values/operator.yaml
+  sources:
+    # 1) Chart desde OCI
+    - repoURL: oci://us-docker.pkg.dev/apigee-release/apigee-hybrid-helm-charts
+      chart: apigee-operator
+      targetRevision: 1.16.0
+      helm:
+        valueFiles:
+          - $values/POC/clusters/runtime/apigee-hybrid/poc/values/operator.yaml
+
+    # 2) Repo Git solo para leer values
+    - repoURL: https://github.com/MathewLove17/apigeePoc.git
+      targetRevision: main
+      ref: values
 
   destination:
     server: https://apigeepoc-xoek8s12.hcp.westeurope.azmk8s.io:443
