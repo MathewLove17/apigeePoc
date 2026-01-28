@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/MathewLove17/apigeePoc.git
     targetRevision: main
-    path: POC/clusters/runtime/apigee-hybrid/base
+    path: POC/clusters/runtime/apigee-hybrid/base/apigee-virtualhost
     helm:
       releaseName: apigee-virtualhost
       valueFiles:
