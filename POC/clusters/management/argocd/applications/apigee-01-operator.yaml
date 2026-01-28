@@ -6,13 +6,12 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  project: default
+  project: default 
 
-  sources:
-    # 1) Chart desde OCI
-    - repoURL: oci://us-docker.pkg.dev/apigee-release/apigee-hybrid-helm-charts
-      chart: apigee-operator
-      targetRevision: 1.16.0
+   source:
+    repoURL: https://github.com/MathewLove17/apigeePoc.git
+    targetRevision: main
+    path: POC/charts/apigee-operator
       helm:
         valueFiles:
           - $values/POC/clusters/runtime/apigee-hybrid/poc/values/operator.yaml
