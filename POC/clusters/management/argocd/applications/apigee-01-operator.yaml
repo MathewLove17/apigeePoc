@@ -10,7 +10,7 @@ spec:
 
   sources:
     # 1) Chart desde OCI
-    - repoURL: oci://us-docker.pkg.dev/apigee-release/apigee-hybrid-helm-charts
+    - repoURL: oci://us-docker.pkg.dev/apigee-release
       chart: apigee-hybrid-helm-charts/apigee-operator
       targetRevision: 1.16.0
       helm:
