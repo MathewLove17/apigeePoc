@@ -12,7 +12,7 @@ spec:
     # 1) Chart desde OCI
     - repoURL: oc://us-docker.pkg.dev/apigee-release/apigee-hybrid-helm-charts
       chart: apigee-operator
-      targetRevision: v1.16.0
+      targetRevision: 1.16.0
       helm:
         valueFiles:
           - $values/POC/clusters/runtime/apigee-hybrid/poc/values/operator.yaml
