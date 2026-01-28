@@ -8,17 +8,14 @@ metadata:
 spec:
   project: default
 
-  sources:
-    - repoURL: oci://us-docker.pkg.dev/apigee-release/apigee-hybrid-helm-charts
-      chart: apigee-virtualhost
-      targetRevision: 1.16.0
-      helm:
-        valueFiles:
-          - $values/POC/clusters/runtime/apigee-hybrid/poc/values/virtualhost.yaml
-
-    - repoURL: https://github.com/MathewLove17/apigeePoc.git
-      targetRevision: main
-      ref: values
+  source:
+    repoURL: https://github.com/MathewLove17/apigeePoc.git
+    targetRevision: main
+    path: POC/clusters/runtime/apigee-hybrid/base
+    helm:
+      releaseName: apigee-virtualhost
+      valueFiles:
+        - ../poc/values/virtualhost.yaml
 
   destination:
     server: https://apigeepoc-xoek8s12.hcp.westeurope.azmk8s.io:443
@@ -29,4 +26,4 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-      - CreateNamespace=true
+      - CreateNamespace=false

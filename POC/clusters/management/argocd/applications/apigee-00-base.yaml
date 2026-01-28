@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: apigee-namespace
+  name: apigee-base
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "0"
@@ -11,9 +11,11 @@ spec:
     repoURL: https://github.com/MathewLove17/apigeePoc.git
     targetRevision: main
     path: POC/clusters/runtime/apigee-hybrid/base
+    directory:
+      recurse: false
   destination:
     server: https://apigeepoc-xoek8s12.hcp.westeurope.azmk8s.io:443
-    namespace: apigee   # NO se usa para crear el namespace
+    namespace: apigee
   syncPolicy:
     automated:
       prune: true

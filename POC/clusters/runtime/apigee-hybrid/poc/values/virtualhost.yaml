@@ -1,0 +1,15 @@
+# Apigee Hybrid - VirtualHost (POC)
+
+org: "pocv2-485612"
+
+# Envgroup al que “ata” el virtualhost (debe existir en Apigee)
+envgroup: "hybrid-group"
+
+# Hostname(s) que expondrá el runtime
+hostnames:
+  - "api.example.com"
+
+# TLS: secret de tipo kubernetes.io/tls en el namespace apigee
+tls:
+  enabled: true
+  secretName: "apigee-tls"
