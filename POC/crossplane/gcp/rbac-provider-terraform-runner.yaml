@@ -4,7 +4,7 @@ metadata:
   name: provider-terraform-runner
   namespace: crossplane-system
 rules:
-  # Crear/gestionar el Job/Pod que ejecuta terraform
+ 
   - apiGroups: ["batch"]
     resources: ["jobs"]
     verbs: ["create", "get", "list", "watch", "delete", "patch", "update"]
@@ -15,12 +15,12 @@ rules:
     resources: ["pods/log"]
     verbs: ["get", "list", "watch"]
 
-  # Algunos providers crean ConfigMaps para el runtime
+  
   - apiGroups: [""]
     resources: ["configmaps"]
     verbs: ["create", "get", "list", "watch", "delete", "patch", "update"]
 
-  # Ya puedes secrets, pero lo dejamos explícito por claridad
+ 
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["create", "get", "list", "watch", "delete", "patch", "update"]
