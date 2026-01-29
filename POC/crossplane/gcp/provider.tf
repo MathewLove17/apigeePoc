@@ -14,5 +14,6 @@ terraform {
 }
 
 provider "google" {
-  project = var.gcp_project_id
+  project     = var.gcp_project_id
+  credentials = file(var.gcp_credentials_file)
 }

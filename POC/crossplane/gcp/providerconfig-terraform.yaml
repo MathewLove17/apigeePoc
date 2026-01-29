@@ -1,0 +1,12 @@
+apiVersion: tf.upbound.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: terraform-default
+spec:
+  credentials:
+    - filename: gcp-creds.json
+      source: Secret
+      secretRef:
+        namespace: crossplane-system
+        name: gcp-sa
+        key: gcp-creds.json

@@ -1,0 +1,28 @@
+apiVersion: tf.upbound.io/v1beta1
+kind: Workspace
+metadata:
+  name: apigee-bootstrap
+  namespace: crossplane-system
+spec:
+  providerConfigRef:
+    name: terraform-default
+
+  forProvider:
+    source: Git
+    module: https://github.com/MathewLove17/apigeePoc.git//POC/crossplane/gcp?ref=main
+
+    vars:
+      - key: gcp_project_id
+        value: "pocapigee-485810"
+
+      - key: analytics_region
+        value: "europe-west1"
+
+      - key: apigee_environment
+        value: "test"
+
+      - key: apigee_envgroup
+        value: "hybrid-group"
+
+      - key: gcp_credentials_file
+        value: "gcp-creds.json"

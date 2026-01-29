@@ -22,3 +22,8 @@ variable "apigee_hostnames" {
   type        = list(string)
   description = "Hostnames del envgroup (ej: api.example.com)."
 }
+
+variable "gcp_credentials_file" {
+  type        = string
+  description = "Ruta al JSON del service account"
+}
