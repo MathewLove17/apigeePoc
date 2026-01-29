@@ -6,10 +6,6 @@ metadata:
 spec:
   deletionPolicy: Delete
 
-  managementPolicies:
-    - Create
-    - Update
-
   providerConfigRef:
     name: terraform-default
 
@@ -17,16 +13,7 @@ spec:
     source: Remote
     module: https://github.com/MathewLove17/apigeePoc/archive/refs/heads/main.zip//apigeePoc-main/POC/crossplane/gcp
 
+    # ESTA var es la que fuerza la ejecución del Workspace
     vars:
       - key: gcp_project_id
         value: "pocapigee-485810"
-      - key: analytics_region
-        value: "europe-west1"
-      - key: apigee_environment
-        value: "test"
-      - key: apigee_envgroup
-        value: "hybrid-group"
-      - key: apigee_hostnames
-        value: "[\"api.example.com\"]"
-      - key: gcp_credentials_file
-        value: "gcp-creds.json"
