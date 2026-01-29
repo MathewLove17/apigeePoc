@@ -4,12 +4,18 @@ metadata:
   name: apigee-bootstrap
   namespace: crossplane-system
 spec:
+  deletionPolicy: Delete
+
+  managementPolicies:
+    - Create
+    - Update
+
   providerConfigRef:
     name: terraform-default
 
   forProvider:
     source: Remote
-    module: "https://github.com/MathewLove17/apigeePoc/archive/refs/heads/main.zip//apigeePoc-main/POC/crossplane/gcp"
+    module: https://github.com/MathewLove17/apigeePoc/archive/refs/heads/main.zip//apigeePoc-main/POC/crossplane/gcp
 
     vars:
       - key: gcp_project_id
@@ -20,8 +26,7 @@ spec:
         value: "test"
       - key: apigee_envgroup
         value: "hybrid-group"
+      - key: apigee_hostnames
+        value: "[\"api.example.com\"]"
       - key: gcp_credentials_file
         value: "gcp-creds.json"
-      - key: apigee_hostnames
-        value: '["api.example.com"]'
-
