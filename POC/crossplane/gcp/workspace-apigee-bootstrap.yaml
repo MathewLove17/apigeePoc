@@ -8,21 +8,20 @@ spec:
     name: terraform-default
 
   forProvider:
-    source: Git
-    module: https://github.com/MathewLove17/apigeePoc.git//POC/crossplane/gcp?ref=main
+    source: Remote
+    module: "https://github.com/MathewLove17/apigeePoc/archive/refs/heads/main.zip//apigeePoc-main/POC/crossplane/gcp"
 
     vars:
       - key: gcp_project_id
         value: "pocapigee-485810"
-
       - key: analytics_region
         value: "europe-west1"
-
       - key: apigee_environment
         value: "test"
-
       - key: apigee_envgroup
         value: "hybrid-group"
-
       - key: gcp_credentials_file
         value: "gcp-creds.json"
+      - key: apigee_hostnames
+        value: '["api.example.com"]'
+
