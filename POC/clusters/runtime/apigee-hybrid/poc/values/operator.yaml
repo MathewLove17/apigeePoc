@@ -6,3 +6,7 @@ gcp:
 
 analytics:
   region: "europe-west1"
+
+guardrails:
+  serviceAccountSecretName: "gcp-sa-json"
+  serviceAccountPath: "/var/run/secrets/google/gcp-creds.json"

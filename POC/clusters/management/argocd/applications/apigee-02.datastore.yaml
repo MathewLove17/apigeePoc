@@ -14,7 +14,7 @@ spec:
     helm:
       releaseName: apigee-datastore
       valueFiles:
-        - POC/clusters/runtime/apigee-hybrid/poc/values/datastore.yaml
+        - ../../clusters/runtime/apigee-hybrid/poc/values/datastore.yaml
   destination:
     server: https://clusterapigee-dns-1vt88dy8.hcp.westeurope.azmk8s.io:443
     namespace: apigee
