@@ -8,14 +8,13 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/MathewLove17/apigeePoc.git
+    repoURL: https://github.com/MathewLove17/apigeePoc
     targetRevision: main
     path: POC/charts/apigee-operator
     helm:
       releaseName: apigee-operator
-      # Si tu chart necesita values, aquí los metemos luego.
-      # valueFiles:
-      #   - ../../clusters/runtime/apigee-hybrid/overrides.yaml
+      valueFiles:
+        - ../../clusters/runtime/apigee-hybrid/overrides.yaml
   destination:
     name: clusterapigee
     namespace: apigee
