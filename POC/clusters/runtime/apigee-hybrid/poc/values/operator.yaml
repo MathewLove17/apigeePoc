@@ -1,17 +1,21 @@
-# =========================================================
-# Apigee Hybrid Operator – AKS compatible
-# =========================================================
+# =========================
+# Apigee Operator values
+# =========================
 
-# -------------------------
-# Apigee org / project
-# -------------------------
-org: "pocapigee-485810"
+contractProvider: https://apigee.googleapis.com
 
-gcp:
-  projectID: "pocapigee-485810"
-  region: "europe-west1"
+# Nombre REAL de tu org (ya lo comprobaste con gcloud)
+org: pocapigee-485810
 
 namespace: apigee
+
+# -------------------------
+# GCP config (Hybrid)
+# -------------------------
+gcp:
+  region: europe-west1
+  projectID: pocapigee-485810
+  projectIDRuntime: pocapigee-485810
 
 # -------------------------
 # Workload Identity (NO GKE)
@@ -23,61 +27,47 @@ federatedWorkloadIdentity:
   enabled: false
 
 # -------------------------
-# Node scheduling (AKS SAFE)
+# MUY IMPORTANTE PARA AKS
+# Elimina afinidades GKE
 # -------------------------
-# IMPORTANTE:
-# - No usar labels de GKE
-# - No forzar afinidad
-nodeSelector:
-  requiredForScheduling: false
-
 affinity: {}
-
-tolerations: []
 
 # -------------------------
 # Apigee Operator
 # -------------------------
 ao:
   image:
-    url: "gcr.io/apigee-release/hybrid/apigee-operators"
+    url: gcr.io/apigee-release/hybrid/apigee-operators
     tag: "1.16.0"
     pullPolicy: Always
 
-  args:
-    loglevel: info
-    enableWebhooks: true
-    enableControllers: true
-    enableAPIClient: true
-    disableFluentdSizeLimit: false
-    disableManagedClusterRoles: true
-    disableSAPProjection: true
-
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 1024Mi
-    requests:
-      cpu: 400m
-      memory: 512Mi
+  loglevel: info
+  enableWebhooks: true
+  enableControllers: true
+  enableAPIClient: true
 
 # -------------------------
-# Guardrails
+# Guardrails (CRÍTICO)
 # -------------------------
 guardrails:
   image:
-    url: "gcr.io/apigee-release/hybrid/apigee-watcher"
+    url: gcr.io/apigee-release/hybrid/apigee-watcher
     tag: "1.16.0"
     pullPolicy: IfNotPresent
 
-  resources:
-    requests:
-      cpu: 500m
-      memory: 64Mi
+  # Secret que YA te crea External Secrets
+  serviceAccountRef: apigee-operator-guardrails-svc-account
 
-  # 👇 USAMOS EL SECRET DE ESO (Key Vault → K8s)
-  serviceAccountRef: gcp-sa-json
+  # 🔥 ESTA LÍNEA ES LA QUE TE BLOQUEABA LOS PODS
+  affinity: {}
 
-  # NO usar en AKS:
-  # serviceAccountPath
-  # serviceAccountSecretProviderClass
+# -------------------------
+# Recursos (opcional)
+# -------------------------
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1024Mi
+  requests:
+    cpu: 400m
+    memory: 512Mi
