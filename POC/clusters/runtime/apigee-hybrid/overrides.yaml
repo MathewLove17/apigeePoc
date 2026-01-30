@@ -72,7 +72,7 @@ virtualhosts:
 # Guardrails (THE MOST IMPORTANT PART FOR YOUR ERROR)
 # ------------------------------------------------------------
 guardrails:
-  serviceAccountPath: /var/secrets/google/gcp-creds.json
+  serviceAccountRef: apigee-operator-guardrails-svc-account
 
   nodeAffinity:
     requiredForScheduling: false
