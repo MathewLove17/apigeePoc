@@ -1,12 +1,19 @@
+contractProvider: https://apigee.googleapis.com
+namespace: apigee
+
 org: "pocapigee-485810"
-instanceID: "pocapigee-485810"
 
 gcp:
-  projectID: "pocapigee-485810"
-
-analytics:
   region: "europe-west1"
+  projectID: "pocapigee-485810"
+  projectIDRuntime: "pocapigee-485810"
+  workloadIdentity:
+    enabled: true
+  federatedWorkloadIdentity:
+    enabled: false
+    tokenExpiration: 3600
 
+# Guardrails: NO poner serviceAccountPath
 guardrails:
-  serviceAccountSecretName: "gcp-sa-json"
-  serviceAccountPath: "/var/run/secrets/google/gcp-creds.json"
+  serviceAccountSecretProviderClass: ""   # se deja vacío
+  serviceAccountPath: ""                 # IMPORTANTE: vacío o elimina la clave
