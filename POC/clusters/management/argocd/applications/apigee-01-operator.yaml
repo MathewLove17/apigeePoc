@@ -13,14 +13,13 @@ spec:
     path: POC/charts/apigee-operator
     helm:
       releaseName: apigee-operator
-      # Por ahora sin values extra. Luego añadimos valuesFiles si hace falta.
+      valueFiles:
+        - ../../runtime/apigee-hybrid/poc/values/operator.yaml
   destination:
     server: https://clusterapigee-dns-1vt88dy8.hcp.westeurope.azmk8s.io:443
     namespace: apigee
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+    automated: { prune: true, selfHeal: true }
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true

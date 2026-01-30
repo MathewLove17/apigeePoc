@@ -1,14 +1,7 @@
-# Apigee Hybrid - org (non-prod POC)
+org: "pocapigee-485810"
 
-org: "pocv2-485612"
+gcp:
+  projectID: "pocapigee-485810"
 
-# Región de Analytics
 analytics:
   region: "europe-west1"
-
-# Credenciales GCP (JSON) en Secret de Kubernetes
-gcp:
-  projectID: "pocv2-485612"
-  serviceAccountSecret:
-    name: "apigee-gcp-sa"
-    key: "service-account.json"
