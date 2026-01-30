@@ -51,3 +51,6 @@ virtualhosts:
     # Aquí lo dejamos sin sslCertPath/sslKeyPath porque tú ya lo gestionas con Secret.
 guardrails:
   serviceAccountRef: apigee-operator-guardrails-svc-account
+
+affinity: {}
+nodeAffinity: {}
