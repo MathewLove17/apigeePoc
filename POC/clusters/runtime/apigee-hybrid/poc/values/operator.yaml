@@ -1,7 +1,10 @@
-# =========================
-# Apigee Operator settings
-# =========================
+# =========================================================
+# Apigee Hybrid Operator – AKS compatible
+# =========================================================
 
+# -------------------------
+# Apigee org / project
+# -------------------------
 org: "pocapigee-485810"
 
 gcp:
@@ -10,24 +13,31 @@ gcp:
 
 namespace: apigee
 
-# =========================
-# Workload identity (NO GKE)
-# =========================
+# -------------------------
+# Workload Identity (NO GKE)
+# -------------------------
 workloadIdentity:
   enabled: false
 
 federatedWorkloadIdentity:
   enabled: false
 
-# =========================
-# Node scheduling (AKS)
-# =========================
+# -------------------------
+# Node scheduling (AKS SAFE)
+# -------------------------
+# IMPORTANTE:
+# - No usar labels de GKE
+# - No forzar afinidad
 nodeSelector:
   requiredForScheduling: false
 
-# =========================
-# Apigee Operator image
-# =========================
+affinity: {}
+
+tolerations: []
+
+# -------------------------
+# Apigee Operator
+# -------------------------
 ao:
   image:
     url: "gcr.io/apigee-release/hybrid/apigee-operators"
@@ -51,9 +61,9 @@ ao:
       cpu: 400m
       memory: 512Mi
 
-# =========================
-# Guardrails (clave aquí)
-# =========================
+# -------------------------
+# Guardrails
+# -------------------------
 guardrails:
   image:
     url: "gcr.io/apigee-release/hybrid/apigee-watcher"
@@ -65,9 +75,9 @@ guardrails:
       cpu: 500m
       memory: 64Mi
 
-  # 👇 IMPORTANTE:
-  # Usamos el Secret creado por External Secrets
+  # 👇 USAMOS EL SECRET DE ESO (Key Vault → K8s)
   serviceAccountRef: gcp-sa-json
 
-  # ⚠️ NO usar serviceAccountPath
-  # ⚠️ NO usar serviceAccountSecretProviderClass
+  # NO usar en AKS:
+  # serviceAccountPath
+  # serviceAccountSecretProviderClass
