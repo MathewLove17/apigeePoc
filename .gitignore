@@ -17,3 +17,5 @@ Thumbs.db
 **/gcp-creds.json
 tls.key
 tls.crt
+
+argocd-linux-amd64
