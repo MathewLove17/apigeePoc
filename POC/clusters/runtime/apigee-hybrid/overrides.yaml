@@ -1,11 +1,11 @@
-# =========================================================
-# Apigee Hybrid 1.16 - AKS PoC overrides
-# =========================================================
+# ============================================================
+# Apigee Hybrid - overrides.yaml
+# Target: AKS / POC / ArgoCD / External Secrets
+# ============================================================
 
-instanceID: poc-apigee-runtime
+instanceID: poc-apigee-aks
+
 namespace: apigee
-
-org: pocapigee-485810
 
 gcp:
   projectID: pocapigee-485810
@@ -13,56 +13,31 @@ gcp:
 
 k8sCluster:
   name: clusterapigee
-  region: spaincentral
+  region: westeurope
 
-# =========================================================
-# AKS: eliminar restricciones de scheduling (GKE defaults)
-# =========================================================
-nodeSelector: {}
-affinity: {}
-tolerations: []
+org: pocapigee-485810
 
-# =========================================================
-# Guardrails: operator exige path al JSON montado
-# Secret: apigee-operator-guardrails-svc-account
-# Key:    gcp-creds.json
-# =========================================================
-guardrails:
-  serviceAccountPath: /var/secrets/google/gcp-creds.json
-  nodeSelector: {}
-  affinity: {}
-  tolerations: []
+# ------------------------------------------------------------
+# Disable strict scheduling (VERY IMPORTANT for AKS)
+# ------------------------------------------------------------
+nodeAffinity:
+  requiredForScheduling: false
 
-# En algunos charts el "guardrail ingress manager" cuelga de ingressManager
-ingressManager:
-  nodeSelector: {}
-  affinity: {}
-  tolerations: []
+podAntiAffinity:
+  requiredForScheduling: false
 
-# En otros charts los nombres cambian; estos bloques extra no molestan
-apigeeOperator:
-  nodeSelector: {}
-  affinity: {}
-  tolerations: []
-
-apigeeIngressManager:
-  nodeSelector: {}
-  affinity: {}
-  tolerations: []
-
-# =========================================================
-# Entorno(s) y Service Account (desde ExternalSecrets)
-# Secret: gcp-sa-json (key gcp-creds.json)
-# =========================================================
+# ------------------------------------------------------------
+# Environments
+# ------------------------------------------------------------
 envs:
   - name: test
     serviceAccountSecretRefs:
-      synchronizer: gcp-sa-json
-      runtime: gcp-sa-json
+      synchronizer: apigee-operator-guardrails-svc-account
+      runtime: apigee-operator-guardrails-svc-account
 
-# =========================================================
-# Cassandra (PoC)
-# =========================================================
+# ------------------------------------------------------------
+# Cassandra (POC sizing)
+# ------------------------------------------------------------
 cassandra:
   hostNetwork: false
   replicaCount: 1
@@ -70,45 +45,112 @@ cassandra:
   affinity: {}
   tolerations: []
 
-# =========================================================
-# Ingress + Virtualhost
-# =========================================================
+# ------------------------------------------------------------
+# Ingress Gateway
+# ------------------------------------------------------------
 ingressGateways:
-  - name: apigee-ingress
+  - name: hybrid-ingress
     replicaCountMin: 1
     replicaCountMax: 2
+    svcAnnotations: {}
+    nodeSelector: {}
+    affinity: {}
+    tolerations: []
 
+# ------------------------------------------------------------
+# Virtual Hosts
+# ------------------------------------------------------------
 virtualhosts:
   - name: hybrid-group
     selector:
       app: apigee-ingressgateway
-    ingress_name: apigee-ingress
+    ingressName: hybrid-ingress
     sslCertPath: certs/tls.crt
     sslKeyPath: certs/tls.key
 
-# =========================================================
-# Componentes que publican en control plane
-# =========================================================
+# ------------------------------------------------------------
+# Guardrails (THE MOST IMPORTANT PART FOR YOUR ERROR)
+# ------------------------------------------------------------
+guardrails:
+  serviceAccountPath: /var/secrets/google/gcp-creds.json
+
+  nodeAffinity:
+    requiredForScheduling: false
+  podAntiAffinity:
+    requiredForScheduling: false
+
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
+# ------------------------------------------------------------
+# Apigee Operator
+# ------------------------------------------------------------
+operator:
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
+# ------------------------------------------------------------
+# MART
+# ------------------------------------------------------------
 mart:
-  serviceAccountRef: gcp-sa-json
+  serviceAccountRef: apigee-operator-guardrails-svc-account
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
+# ------------------------------------------------------------
+# Connect Agent
+# ------------------------------------------------------------
 connectAgent:
-  serviceAccountRef: gcp-sa-json
+  serviceAccountRef: apigee-operator-guardrails-svc-account
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
+# ------------------------------------------------------------
+# Logger
+# ------------------------------------------------------------
 logger:
   enabled: true
-  serviceAccountRef: gcp-sa-json
+  serviceAccountRef: apigee-operator-guardrails-svc-account
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
+# ------------------------------------------------------------
+# Metrics
+# ------------------------------------------------------------
 metrics:
-  serviceAccountRef: gcp-sa-json
+  serviceAccountRef: apigee-operator-guardrails-svc-account
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
+# ------------------------------------------------------------
+# Watcher
+# ------------------------------------------------------------
 watcher:
-  serviceAccountRef: gcp-sa-json
+  serviceAccountRef: apigee-operator-guardrails-svc-account
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
-# =========================================================
+# ------------------------------------------------------------
 # Runtime
-# =========================================================
+# ------------------------------------------------------------
 runtime:
   image:
     uri: gcr.io/apigee-release/hybrid/apigee-runtime
     tag: "1.16.0"
+
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
+# ------------------------------------------------------------
+# Mint (disabled for now)
+# ------------------------------------------------------------
+mintTaskScheduler:
+  enabled: false
