@@ -1,56 +1,114 @@
-# Identificador único por cluster (puede ser cualquier string)
-instanceID: "apigee-aks-01"
+# =========================================================
+# Apigee Hybrid 1.16 - AKS PoC overrides
+# =========================================================
 
-namespace: "apigee"
+instanceID: poc-apigee-runtime
+namespace: apigee
+
+org: pocapigee-485810
 
 gcp:
-  projectID: "pocapigee-485810"
-  # analytics region: elige la región de analytics que hayas usado en Apigee.
-  # Si no lo tienes claro, pon "europe-west1" (común).
-  region: "europe-west1"
+  projectID: pocapigee-485810
+  region: europe-west1
 
 k8sCluster:
-  name: "clusterapigee"
-  # En AKS pon la región de Azure donde corre el cluster
-  region: "spaincentral"
+  name: clusterapigee
+  region: spaincentral
 
-# Apigee organization (en tu caso igual al project id)
-org: "pocapigee-485810"
+# =========================================================
+# AKS: eliminar restricciones de scheduling (GKE defaults)
+# =========================================================
+nodeSelector: {}
+affinity: {}
+tolerations: []
 
-# Recomendado por la guía
-enhanceProxyLimits: true
+# =========================================================
+# Guardrails: operator exige path al JSON montado
+# Secret: apigee-operator-guardrails-svc-account
+# Key:    gcp-creds.json
+# =========================================================
+guardrails:
+  serviceAccountPath: /var/secrets/google/gcp-creds.json
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
+# En algunos charts el "guardrail ingress manager" cuelga de ingressManager
+ingressManager:
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
+# En otros charts los nombres cambian; estos bloques extra no molestan
+apigeeOperator:
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
+apigeeIngressManager:
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+
+# =========================================================
+# Entorno(s) y Service Account (desde ExternalSecrets)
+# Secret: gcp-sa-json (key gcp-creds.json)
+# =========================================================
 envs:
-  - name: "test"
+  - name: test
     serviceAccountSecretRefs:
-      # Para PoC, reutilizamos el mismo secret para todo
-      synchronizer: "gcp-sa-json"
-      runtime: "gcp-sa-json"
+      synchronizer: gcp-sa-json
+      runtime: gcp-sa-json
 
-# Cassandra non-prod: 1 réplica
+# =========================================================
+# Cassandra (PoC)
+# =========================================================
 cassandra:
   hostNetwork: false
   replicaCount: 1
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
-# Ingress gateway name (máx 17 chars, minúsculas, guiones ok)
+# =========================================================
+# Ingress + Virtualhost
+# =========================================================
 ingressGateways:
-  - name: "ingressgw"
-    replicaCountMin: 2
+  - name: apigee-ingress
+    replicaCountMin: 1
     replicaCountMax: 2
-    # En AKS normalmente quieres LB externo
-    svcAnnotations:
-      service.beta.kubernetes.io/azure-load-balancer-internal: "false"
 
 virtualhosts:
-  - name: "hybrid-group"
+  - name: hybrid-group
     selector:
       app: apigee-ingressgateway
-      ingress_name: "ingressgw"
-    # En vez de rutas a ficheros (GitOps), referenciaremos el secret TLS
-    # OJO: esto NO es el campo de la guía. Lo conectamos en el chart/values del virtualhost.
-    # Aquí lo dejamos sin sslCertPath/sslKeyPath porque tú ya lo gestionas con Secret.
-guardrails:
-  serviceAccountRef: apigee-operator-guardrails-svc-account
+    ingress_name: apigee-ingress
+    sslCertPath: certs/tls.crt
+    sslKeyPath: certs/tls.key
 
-affinity: {}
-nodeAffinity: {}
+# =========================================================
+# Componentes que publican en control plane
+# =========================================================
+mart:
+  serviceAccountRef: gcp-sa-json
+
+connectAgent:
+  serviceAccountRef: gcp-sa-json
+
+logger:
+  enabled: true
+  serviceAccountRef: gcp-sa-json
+
+metrics:
+  serviceAccountRef: gcp-sa-json
+
+watcher:
+  serviceAccountRef: gcp-sa-json
+
+# =========================================================
+# Runtime
+# =========================================================
+runtime:
+  image:
+    uri: gcr.io/apigee-release/hybrid/apigee-runtime
+    tag: "1.16.0"
