@@ -1,7 +1,0 @@
-org: "pocapigee-485810"
-
-gcp:
-  projectID: "pocapigee-485810"
-
-analytics:
-  region: "europe-west1"
