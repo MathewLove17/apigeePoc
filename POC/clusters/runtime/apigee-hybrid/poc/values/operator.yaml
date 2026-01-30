@@ -1,14 +1,73 @@
+# =========================
+# Apigee Operator settings
+# =========================
+
 org: "pocapigee-485810"
 
 gcp:
-  region: "europe-west1"
   projectID: "pocapigee-485810"
-  projectIDRuntime: "pocapigee-485810"
-  workloadIdentity:
-    enabled: false
+  region: "europe-west1"
 
+namespace: apigee
+
+# =========================
+# Workload identity (NO GKE)
+# =========================
+workloadIdentity:
+  enabled: false
+
+federatedWorkloadIdentity:
+  enabled: false
+
+# =========================
+# Node scheduling (AKS)
+# =========================
+nodeSelector:
+  requiredForScheduling: false
+
+# =========================
+# Apigee Operator image
+# =========================
+ao:
+  image:
+    url: "gcr.io/apigee-release/hybrid/apigee-operators"
+    tag: "1.16.0"
+    pullPolicy: Always
+
+  args:
+    loglevel: info
+    enableWebhooks: true
+    enableControllers: true
+    enableAPIClient: true
+    disableFluentdSizeLimit: false
+    disableManagedClusterRoles: true
+    disableSAPProjection: true
+
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 400m
+      memory: 512Mi
+
+# =========================
+# Guardrails (clave aquí)
+# =========================
 guardrails:
-  serviceAccountRef:
-    name: gcp-sa-json
-  serviceAccountPath: ""
-  serviceAccountSecretProviderClass: ""
+  image:
+    url: "gcr.io/apigee-release/hybrid/apigee-watcher"
+    tag: "1.16.0"
+    pullPolicy: IfNotPresent
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 64Mi
+
+  # 👇 IMPORTANTE:
+  # Usamos el Secret creado por External Secrets
+  serviceAccountRef: gcp-sa-json
+
+  # ⚠️ NO usar serviceAccountPath
+  # ⚠️ NO usar serviceAccountSecretProviderClass
