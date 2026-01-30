@@ -1,11 +1,11 @@
 # ============================================================
-# Apigee Hybrid - overrides.yaml
-# Target: AKS / POC / ArgoCD / External Secrets
+# Apigee Hybrid 1.16 - overrides.yaml (AKS / PoC)
 # ============================================================
 
 instanceID: poc-apigee-aks
-
 namespace: apigee
+
+org: pocapigee-485810
 
 gcp:
   projectID: pocapigee-485810
@@ -15,11 +15,13 @@ k8sCluster:
   name: clusterapigee
   region: westeurope
 
-org: pocapigee-485810
+# ------------------------------------------------------------
+# AKS scheduling defaults: no strict affinity/selectors
+# ------------------------------------------------------------
+nodeSelector: {}
+affinity: {}
+tolerations: []
 
-# ------------------------------------------------------------
-# Disable strict scheduling (VERY IMPORTANT for AKS)
-# ------------------------------------------------------------
 nodeAffinity:
   requiredForScheduling: false
 
@@ -27,16 +29,31 @@ podAntiAffinity:
   requiredForScheduling: false
 
 # ------------------------------------------------------------
+# Guardrails: usamos ESO + Secret existente (no file paths)
+# ------------------------------------------------------------
+guardrails:
+  serviceAccountSecretProviderClass: ""   # lo deja apagado (CSI)
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  nodeAffinity:
+    requiredForScheduling: false
+  podAntiAffinity:
+    requiredForScheduling: false
+
+# ------------------------------------------------------------
 # Environments
+# OJO: aquí deben ir tus secrets reales para runtime/synchronizer.
+# En tu caso tú tienes: gcp-sa-json (con gcp-creds.json)
 # ------------------------------------------------------------
 envs:
   - name: test
     serviceAccountSecretRefs:
-      synchronizer: apigee-operator-guardrails-svc-account
-      runtime: apigee-operator-guardrails-svc-account
+      synchronizer: gcp-sa-json
+      runtime: gcp-sa-json
 
 # ------------------------------------------------------------
-# Cassandra (POC sizing)
+# Cassandra (PoC)
 # ------------------------------------------------------------
 cassandra:
   hostNetwork: false
@@ -58,7 +75,7 @@ ingressGateways:
     tolerations: []
 
 # ------------------------------------------------------------
-# Virtual Hosts
+# Virtual Hosts (envgroup = hybrid-group)
 # ------------------------------------------------------------
 virtualhosts:
   - name: hybrid-group
@@ -69,88 +86,46 @@ virtualhosts:
     sslKeyPath: certs/tls.key
 
 # ------------------------------------------------------------
-# Guardrails (THE MOST IMPORTANT PART FOR YOUR ERROR)
-# ------------------------------------------------------------
-guardrails:
-  serviceAccountRef: apigee-operator-guardrails-svc-account
-
-  nodeAffinity:
-    requiredForScheduling: false
-  podAntiAffinity:
-    requiredForScheduling: false
-
-  nodeSelector: {}
-  affinity: {}
-  tolerations: []
-
-# ------------------------------------------------------------
-# Apigee Operator
-# ------------------------------------------------------------
-operator:
-  nodeSelector: {}
-  affinity: {}
-  tolerations: []
-
-# ------------------------------------------------------------
-# MART
+# Control plane publishers (PoC)
 # ------------------------------------------------------------
 mart:
-  serviceAccountRef: apigee-operator-guardrails-svc-account
+  serviceAccountRef: gcp-sa-json
   nodeSelector: {}
   affinity: {}
   tolerations: []
 
-# ------------------------------------------------------------
-# Connect Agent
-# ------------------------------------------------------------
 connectAgent:
-  serviceAccountRef: apigee-operator-guardrails-svc-account
+  serviceAccountRef: gcp-sa-json
   nodeSelector: {}
   affinity: {}
   tolerations: []
 
-# ------------------------------------------------------------
-# Logger
-# ------------------------------------------------------------
 logger:
   enabled: true
-  serviceAccountRef: apigee-operator-guardrails-svc-account
+  serviceAccountRef: gcp-sa-json
   nodeSelector: {}
   affinity: {}
   tolerations: []
 
-# ------------------------------------------------------------
-# Metrics
-# ------------------------------------------------------------
 metrics:
-  serviceAccountRef: apigee-operator-guardrails-svc-account
+  serviceAccountRef: gcp-sa-json
   nodeSelector: {}
   affinity: {}
   tolerations: []
 
-# ------------------------------------------------------------
-# Watcher
-# ------------------------------------------------------------
 watcher:
-  serviceAccountRef: apigee-operator-guardrails-svc-account
+  serviceAccountRef: gcp-sa-json
   nodeSelector: {}
   affinity: {}
   tolerations: []
 
-# ------------------------------------------------------------
-# Runtime
-# ------------------------------------------------------------
 runtime:
   image:
     uri: gcr.io/apigee-release/hybrid/apigee-runtime
     tag: "1.16.0"
-
   nodeSelector: {}
   affinity: {}
   tolerations: []
 
-# ------------------------------------------------------------
-# Mint (disabled for now)
-# ------------------------------------------------------------
 mintTaskScheduler:
   enabled: false
