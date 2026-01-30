@@ -1,0 +1,51 @@
+# Identificador único por cluster (puede ser cualquier string)
+instanceID: "apigee-aks-01"
+
+namespace: "apigee"
+
+gcp:
+  projectID: "pocapigee-485810"
+  # analytics region: elige la región de analytics que hayas usado en Apigee.
+  # Si no lo tienes claro, pon "europe-west1" (común).
+  region: "europe-west1"
+
+k8sCluster:
+  name: "clusterapigee"
+  # En AKS pon la región de Azure donde corre el cluster
+  region: "spaincentral"
+
+# Apigee organization (en tu caso igual al project id)
+org: "pocapigee-485810"
+
+# Recomendado por la guía
+enhanceProxyLimits: true
+
+envs:
+  - name: "test"
+    serviceAccountSecretRefs:
+      # Para PoC, reutilizamos el mismo secret para todo
+      synchronizer: "gcp-sa-json"
+      runtime: "gcp-sa-json"
+
+# Cassandra non-prod: 1 réplica
+cassandra:
+  hostNetwork: false
+  replicaCount: 1
+
+# Ingress gateway name (máx 17 chars, minúsculas, guiones ok)
+ingressGateways:
+  - name: "ingressgw"
+    replicaCountMin: 2
+    replicaCountMax: 2
+    # En AKS normalmente quieres LB externo
+    svcAnnotations:
+      service.beta.kubernetes.io/azure-load-balancer-internal: "false"
+
+virtualhosts:
+  - name: "hybrid-group"
+    selector:
+      app: apigee-ingressgateway
+      ingress_name: "ingressgw"
+    # En vez de rutas a ficheros (GitOps), referenciaremos el secret TLS
+    # OJO: esto NO es el campo de la guía. Lo conectamos en el chart/values del virtualhost.
+    # Aquí lo dejamos sin sslCertPath/sslKeyPath porque tú ya lo gestionas con Secret.
