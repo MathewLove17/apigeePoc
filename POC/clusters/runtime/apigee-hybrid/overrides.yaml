@@ -49,3 +49,5 @@ virtualhosts:
     # En vez de rutas a ficheros (GitOps), referenciaremos el secret TLS
     # OJO: esto NO es el campo de la guía. Lo conectamos en el chart/values del virtualhost.
     # Aquí lo dejamos sin sslCertPath/sslKeyPath porque tú ya lo gestionas con Secret.
+guardrails:
+  serviceAccountRef: apigee-operator-guardrails-svc-account
