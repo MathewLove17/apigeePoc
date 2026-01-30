@@ -1,6 +1,6 @@
-# =========================
+# ===========================
 # Apigee Operator values
-# =========================
+# ===========================
 
 contractProvider: https://apigee.googleapis.com
 
@@ -9,46 +9,59 @@ org: pocapigee-485810
 
 namespace: apigee
 
-# -------------------------
+# ---------------------------
 # GCP config (Hybrid)
-# -------------------------
+# ---------------------------
 gcp:
   region: europe-west1
   projectID: pocapigee-485810
   projectIDRuntime: pocapigee-485810
 
-# -------------------------
+# ---------------------------
 # Workload Identity (NO GKE)
-# -------------------------
+# ---------------------------
 workloadIdentity:
   enabled: false
 
 federatedWorkloadIdentity:
   enabled: false
 
-# -------------------------
+# ---------------------------
 # MUY IMPORTANTE PARA AKS
-# Elimina afinidades GKE
-# -------------------------
+# Elimina dependencias de labels GKE
+# ---------------------------
+
+# Esto es lo que el chart usa para construir el required nodeAffinity/selector.
+# En AKS usamos labels reales: agentpool=agentpool (según tus nodos).
+nodeSelector:
+  requiredForScheduling: true
+  apigeeRuntime:
+    key: "agentpool"
+    value: "agentpool"
+  apigeeData:
+    key: "agentpool"
+    value: "agentpool"
+
+# Puedes dejarlo, pero el bloqueo venía realmente de nodeSelector.
 affinity: {}
 
-# -------------------------
+# ---------------------------
 # Apigee Operator
-# -------------------------
+# ---------------------------
 ao:
   image:
     url: gcr.io/apigee-release/hybrid/apigee-operators
     tag: "1.16.0"
     pullPolicy: Always
 
-  loglevel: info
-  enableWebhooks: true
-  enableControllers: true
-  enableAPIClient: true
+loglevel: info
+enableWebhooks: true
+enableControllers: true
+enableAPIClient: true
 
-# -------------------------
+# ---------------------------
 # Guardrails (CRÍTICO)
-# -------------------------
+# ---------------------------
 guardrails:
   image:
     url: gcr.io/apigee-release/hybrid/apigee-watcher
@@ -58,12 +71,9 @@ guardrails:
   # Secret que YA te crea External Secrets
   serviceAccountRef: apigee-operator-guardrails-svc-account
 
-  # 🔥 ESTA LÍNEA ES LA QUE TE BLOQUEABA LOS PODS
+  # lo puedes dejar, pero lo importante es nodeSelector arriba
   affinity: {}
 
-# -------------------------
-# Recursos (opcional)
-# -------------------------
 resources:
   limits:
     cpu: 1000m
