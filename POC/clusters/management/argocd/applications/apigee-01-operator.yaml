@@ -1,34 +1,26 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: apigee-operator
+  name: apigee-01-operator
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "10"
 spec:
   project: default
-
-  sources:
-    # 1) Chart desde OCI
-    - repoURL: oci://us-docker.pkg.dev/apigee-release/apigee-hybrid-helm-charts
-      chart: apigee-operator
-      targetRevision: 1.16.0
-      helm:
-        valueFiles:
-          - $values/POC/clusters/runtime/apigee-hybrid/poc/values/operator.yaml
-
-    # 2) Repo Git solo para leer values
-    - repoURL: https://github.com/MathewLove17/apigeePoc.git
-      targetRevision: main
-      ref: values
-
+  source:
+    repoURL: https://github.com/MathewLove17/apigeePoc.git
+    targetRevision: HEAD
+    path: POC/charts/apigee-operator
+    helm:
+      releaseName: apigee-operator
+      # Por ahora sin values extra. Luego añadimos valuesFiles si hace falta.
   destination:
-    server: https://apigeepoc-xoek8s12.hcp.westeurope.azmk8s.io:443
-    namespace: apigee-system
-
+    server: https://clusterapigee-dns-1vt88dy8.hcp.westeurope.azmk8s.io:443
+    namespace: apigee
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true

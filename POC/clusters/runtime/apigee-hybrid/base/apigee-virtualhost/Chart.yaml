@@ -1,7 +1,0 @@
-apiVersion: v2
-name: apigee-virtualhost-wrapper
-version: 0.1.0
-dependencies:
-  - name: apigee-virtualhost
-    version: "1.16.0"
-    repository: "oci://us-docker.pkg.dev/apigee-release/apigee-hybrid-helm-charts"

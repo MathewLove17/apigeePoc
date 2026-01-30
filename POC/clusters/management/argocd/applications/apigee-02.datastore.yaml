@@ -1,32 +1,25 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: apigee-datastore
+  name: apigee-02-datastore
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "20"
 spec:
   project: default
-
-  sources:
-    - repoURL: oci://us-docker.pkg.dev/apigee-release/apigee-hybrid-helm-charts
-      chart: apigee-datastore
-      targetRevision: 1.16.0
-      helm:
-        valueFiles:
-          - $values/POC/clusters/runtime/apigee-hybrid/poc/values/datastore.yaml
-
-    - repoURL: https://github.com/MathewLove17/apigeePoc.git
-      targetRevision: main
-      ref: values
-
+  source:
+    repoURL: https://github.com/MathewLove17/apigeePoc.git
+    targetRevision: HEAD
+    path: POC/charts/apigee-datastore
+    helm:
+      releaseName: apigee-datastore
   destination:
-    server: https://apigeepoc-xoek8s12.hcp.westeurope.azmk8s.io:443
+    server: https://clusterapigee-dns-1vt88dy8.hcp.westeurope.azmk8s.io:443
     namespace: apigee
-
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
