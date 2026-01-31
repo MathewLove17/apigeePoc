@@ -3,18 +3,19 @@ kind: Application
 metadata:
   name: apigee-01-crds
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   source:
-    repoURL: https://github.com/MathewLove17/apigeePoc
+    repoURL: <TU_REPO>
     targetRevision: main
-    path: POC/charts/apigee-operator/etc/crds/
+    path: charts/apigee-operator/etc/crds
   destination:
-    name: clusterapigee
+    server: https://kubernetes.default.svc
     namespace: apigee
   syncPolicy:
     automated:
-      prune: true
       selfHeal: true
+      prune: false
+    syncOptions:
+      - ServerSideApply=true
+      - Replace=true
