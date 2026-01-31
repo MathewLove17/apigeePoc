@@ -10,7 +10,7 @@ spec:
     targetRevision: main
     path: charts/apigee-operator/etc/crds
   destination:
-    server: https://kubernetes.default.svc
+    name: clusterapigee
     namespace: apigee
   syncPolicy:
     automated:
