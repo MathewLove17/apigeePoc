@@ -1,11 +1,10 @@
 # ============================================================
-# Apigee Hybrid 1.16 - overrides.yaml (AKS / PoC)
+# Apigee Hybrid 1.16 - overrides.yaml (basado en plantilla oficial)
+# Target: AKS / PoC / ArgoCD / External Secrets
 # ============================================================
 
 instanceID: poc-apigee-aks
 namespace: apigee
-
-org: pocapigee-485810
 
 gcp:
   projectID: pocapigee-485810
@@ -13,119 +12,85 @@ gcp:
 
 k8sCluster:
   name: clusterapigee
+  # en AKS esto es orientativo para analytics/nearest region
   region: westeurope
 
-# ------------------------------------------------------------
-# AKS scheduling defaults: no strict affinity/selectors
-# ------------------------------------------------------------
-nodeSelector: {}
-affinity: {}
-tolerations: []
+org: pocapigee-485810
 
-nodeAffinity:
-  requiredForScheduling: false
-
-podAntiAffinity:
-  requiredForScheduling: false
-
-# ------------------------------------------------------------
-# Guardrails: usamos ESO + Secret existente (no file paths)
-# ------------------------------------------------------------
-guardrails:
-  serviceAccountSecretProviderClass: ""   # lo deja apagado (CSI)
-  nodeSelector: {}
-  affinity: {}
-  tolerations: []
-  nodeAffinity:
-    requiredForScheduling: false
-  podAntiAffinity:
-    requiredForScheduling: false
-
-# ------------------------------------------------------------
-# Environments
-# OJO: aquí deben ir tus secrets reales para runtime/synchronizer.
-# En tu caso tú tienes: gcp-sa-json (con gcp-creds.json)
-# ------------------------------------------------------------
+# ---------------------------
+# Entorno
+# ---------------------------
 envs:
   - name: test
     serviceAccountSecretRefs:
+      # En no-prod puedes usar el mismo secret para todo si quieres (POC)
       synchronizer: gcp-sa-json
       runtime: gcp-sa-json
 
-# ------------------------------------------------------------
-# Cassandra (PoC)
-# ------------------------------------------------------------
+# ---------------------------
+# Cassandra (POC)
+# ---------------------------
 cassandra:
   hostNetwork: false
   replicaCount: 1
-  nodeSelector: {}
-  affinity: {}
-  tolerations: []
 
-# ------------------------------------------------------------
+# ---------------------------
 # Ingress Gateway
-# ------------------------------------------------------------
+# ---------------------------
 ingressGateways:
   - name: hybrid-ingress
     replicaCountMin: 1
     replicaCountMax: 2
     svcAnnotations: {}
-    nodeSelector: {}
-    affinity: {}
-    tolerations: []
 
-# ------------------------------------------------------------
-# Virtual Hosts (envgroup = hybrid-group)
-# ------------------------------------------------------------
+# ---------------------------
+# Virtualhosts (EnvGroup)
+# envgroup = hybrid-group (lo que tú ya tienes)
+# ---------------------------
 virtualhosts:
   - name: hybrid-group
     selector:
       app: apigee-ingressgateway
-    ingressName: hybrid-ingress
+    ingress_name: hybrid-ingress
     sslCertPath: certs/tls.crt
     sslKeyPath: certs/tls.key
 
-# ------------------------------------------------------------
-# Control plane publishers (PoC)
-# ------------------------------------------------------------
+# ---------------------------
+# ServiceAccount secrets (desde ExternalSecrets)
+# ---------------------------
+guardrails:
+  # OJO: aquí la plantilla oficial usa serviceAccountRef (secret name)
+  # Tú ya tienes el secret "apigee-operator-guardrails-svc-account" pero
+  # por ESO te está dejando dentro la key gcp-creds.json
+  serviceAccountRef: apigee-operator-guardrails-svc-account
+
 mart:
   serviceAccountRef: gcp-sa-json
-  nodeSelector: {}
-  affinity: {}
-  tolerations: []
 
 connectAgent:
   serviceAccountRef: gcp-sa-json
-  nodeSelector: {}
-  affinity: {}
-  tolerations: []
 
 logger:
   enabled: true
   serviceAccountRef: gcp-sa-json
-  nodeSelector: {}
-  affinity: {}
-  tolerations: []
 
 metrics:
   serviceAccountRef: gcp-sa-json
-  nodeSelector: {}
-  affinity: {}
-  tolerations: []
 
 watcher:
   serviceAccountRef: gcp-sa-json
-  nodeSelector: {}
-  affinity: {}
-  tolerations: []
 
+# ---------------------------
+# Runtime
+# ---------------------------
 runtime:
   image:
-    uri: gcr.io/apigee-release/hybrid/apigee-runtime
+    uri: "gcr.io/apigee-release/hybrid/apigee-runtime"
     tag: "1.16.0"
-  nodeSelector: {}
-  affinity: {}
-  tolerations: []
-
-mintTaskScheduler:
-  enabled: false
+  # sizing POC (si quieres lo ajustamos luego)
+  #cwcAppend:
+  #  resources:
+  #    requests:
+  #      memory: 4Gi
+  #    limits:
+  #      memory: 6Gi
