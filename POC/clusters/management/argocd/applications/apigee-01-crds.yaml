@@ -4,13 +4,13 @@ metadata:
   name: apigee-01-crds
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   source:
     repoURL: https://github.com/MathewLove17/apigeePoc
     targetRevision: main
-    path: POC/charts/apigee-operator/etc/crds/crd
+    path: POC/charts/apigee-operator/etc/crds/
   destination:
     name: clusterapigee
     namespace: apigee
