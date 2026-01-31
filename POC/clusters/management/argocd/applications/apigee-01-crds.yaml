@@ -1,21 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: apigee-10-operator
+  name: apigee-01-crds
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
   source:
     repoURL: https://github.com/MathewLove17/apigeePoc
     targetRevision: main
-    path: POC/charts/apigee-operator
-    helm:
-      releaseName: apigee-operator
-      skipCrds: true
-      valueFiles:
-        - ../../clusters/runtime/apigee-hybrid/overrides.yaml
+    path: POC/charts/apigee-operator/etc/crds/crd
   destination:
     name: clusterapigee
     namespace: apigee
@@ -23,5 +18,3 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
