@@ -19,3 +19,4 @@ tls.key
 tls.crt
 
 argocd-linux-amd64
+argocd-ns.json
