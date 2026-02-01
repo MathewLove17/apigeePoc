@@ -27,15 +27,8 @@ nodeAffinity:
   key: kubernetes.azure.com/agentpool
   values:
     - agentpool
-    
-nodeSelector:
-  requiredForScheduling: false
-  apigeeRuntime:
-    key: "cloud.google.com/gke-nodepool"
-    value: "apigee-runtime"
-  apigeeData:
-    key: "cloud.google.com/gke-nodepool"
-    value: "apigee-data"
+
+
 
 # ------------------------------------------------------------
 # Entorno
