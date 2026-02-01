@@ -23,7 +23,7 @@ org: pocapigee-485810
 # y fuerza a correr en el agentpool de AKS
 # ------------------------------------------------------------
 nodeAffinity:
-  requiredForScheduling: false
+  requiredForScheduling: true
   key: kubernetes.azure.com/agentpool
   values:
     - agentpool
