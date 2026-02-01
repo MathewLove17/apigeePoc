@@ -14,7 +14,7 @@ spec:
     helm:
       valueFiles:
         - ../../clusters/runtime/apigee-hybrid/overrides.yaml
-        parameters:
+      parameters:
         - name: env
           value: test
   destination:
