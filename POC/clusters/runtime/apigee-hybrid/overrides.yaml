@@ -1,6 +1,6 @@
 # ============================================================
 # Apigee Hybrid 1.16 - overrides.yaml (basado en plantilla oficial)
-# Target: AKS / PoC / ArgoCD / External Secrets
+# Target: AKS / POC / ArgoCD / External Secrets
 # ============================================================
 
 instanceID: poc-apigee-aks
@@ -12,56 +12,65 @@ gcp:
 
 k8sCluster:
   name: clusterapigee
-  # en AKS esto es orientativo para analytics/nearest region
+  # En AKS esto es orientativo para analytics/nearest region
   region: westeurope
 
 org: pocapigee-485810
 
-# ---------------------------
+# ------------------------------------------------------------
+# Scheduling (AKS)
+# Evita el default GKE affinity (cloud.google.com/gke-nodepool)
+# y fuerza a correr en el agentpool de AKS
+# ------------------------------------------------------------
+nodeAffinity:
+  requiredForScheduling: false
+  key: kubernetes.azure.com/agentpool
+  values:
+    - agentpool
+
+# ------------------------------------------------------------
 # Entorno
-# ---------------------------
+# ------------------------------------------------------------
 envs:
   - name: test
     serviceAccountSecretRefs:
-      # En no-prod puedes usar el mismo secret para todo si quieres (POC)
+      # En POC puedes usar el mismo secret para todo
       synchronizer: gcp-sa-json
       runtime: gcp-sa-json
 
-# ---------------------------
+# ------------------------------------------------------------
 # Cassandra (POC)
-# ---------------------------
+# ------------------------------------------------------------
 cassandra:
   hostNetwork: false
   replicaCount: 1
 
-# ---------------------------
-# Ingress Gateway
-# ---------------------------
+# ------------------------------------------------------------
+# Ingress Gateways
+# ------------------------------------------------------------
 ingressGateways:
   - name: hybrid-ingress
     replicaCountMin: 1
     replicaCountMax: 2
     svcAnnotations: {}
 
-# ---------------------------
+# ------------------------------------------------------------
 # Virtualhosts (EnvGroup)
 # envgroup = hybrid-group (lo que tú ya tienes)
-# ---------------------------
+# ------------------------------------------------------------
 virtualhosts:
   - name: hybrid-group
     selector:
       app: apigee-ingressgateway
-    ingress_name: hybrid-ingress
+      ingress_name: hybrid-ingress
     sslCertPath: certs/tls.crt
     sslKeyPath: certs/tls.key
 
-# ---------------------------
+# ------------------------------------------------------------
 # ServiceAccount secrets (desde ExternalSecrets)
-# ---------------------------
+# IMPORTANTE: los secrets deben contener la key: client_secret.json
+# ------------------------------------------------------------
 guardrails:
-  # OJO: aquí la plantilla oficial usa serviceAccountRef (secret name)
-  # Tú ya tienes el secret "apigee-operator-guardrails-svc-account" pero
-  # por ESO te está dejando dentro la key gcp-creds.json
   serviceAccountRef: apigee-operator-guardrails-svc-account
 
 mart:
@@ -80,9 +89,9 @@ metrics:
 watcher:
   serviceAccountRef: gcp-sa-json
 
-# ---------------------------
+# ------------------------------------------------------------
 # Runtime
-# ---------------------------
+# ------------------------------------------------------------
 runtime:
   image:
     uri: "gcr.io/apigee-release/hybrid/apigee-runtime"
