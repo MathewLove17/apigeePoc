@@ -28,6 +28,16 @@ nodeAffinity:
   values:
     - agentpool
 
+nodeSelector:
+  requiredForScheduling: true   # o false si quieres que “no bloquee”
+  apigeeRuntime:
+    key: "kubernetes.azure.com/agentpool"
+    value: "agentpool"          # <-- aquí el nombre REAL del agentpool donde quieres runtime/operator
+  apigeeData:
+    key: "kubernetes.azure.com/agentpool"
+    value: "agentpool"          # <-- y aquí el agentpool para data (cassandra/redis)
+
+
 
 
 # ------------------------------------------------------------
