@@ -29,7 +29,7 @@ nodeAffinity:
     - agentpool
 
 nodeSelector:
-  requiredForScheduling: true   # o false si quieres que “no bloquee”
+  requiredForScheduling: false   # o false si quieres que “no bloquee”
   apigeeRuntime:
     key: "kubernetes.azure.com/agentpool"
     value: "agentpool"          # <-- aquí el nombre REAL del agentpool donde quieres runtime/operator
