@@ -12,16 +12,10 @@ gcp:
 
 k8sCluster:
   name: clusterapigee
-  # En AKS esto es orientativo para analytics/nearest region
   region: westeurope
 
 org: pocapigee-485810
 
-# ------------------------------------------------------------
-# Scheduling (AKS)
-# Evita el default GKE affinity (cloud.google.com/gke-nodepool)
-# y fuerza a correr en el agentpool de AKS
-# ------------------------------------------------------------
 nodeAffinity:
   requiredForScheduling: true
   key: kubernetes.azure.com/agentpool
@@ -29,40 +23,25 @@ nodeAffinity:
     - agentpool
 
 
-
-
-
-
-# ------------------------------------------------------------
-# Entorno
-# ------------------------------------------------------------
 envs:
   - name: test
     serviceAccountSecretRefs:
-      # En POC puedes usar el mismo secret para todo
+
       synchronizer: gcp-sa-json
       runtime: gcp-sa-json
 
-# ------------------------------------------------------------
-# Cassandra (POC)
-# ------------------------------------------------------------
+
 cassandra:
   hostNetwork: false
   replicaCount: 1
 
-# ------------------------------------------------------------
-# Ingress Gateways
-# ------------------------------------------------------------
+
 ingressGateways:
   - name: hybrid-ingress
     replicaCountMin: 1
     replicaCountMax: 2
     svcAnnotations: {}
 
-# ------------------------------------------------------------
-# Virtualhosts (EnvGroup)
-# envgroup = hybrid-group (lo que tú ya tienes)
-# ------------------------------------------------------------
 virtualhosts:
   - name: hybrid-group
     selector:
@@ -71,10 +50,7 @@ virtualhosts:
     sslCertPath: certs/tls.crt
     sslKeyPath: certs/tls.key
 
-# ------------------------------------------------------------
-# ServiceAccount secrets (desde ExternalSecrets)
-# IMPORTANTE: los secrets deben contener la key: client_secret.json
-# ------------------------------------------------------------
+
 guardrails:
   serviceAccountRef: apigee-operator-guardrails-svc-account
 
@@ -94,17 +70,9 @@ metrics:
 watcher:
   serviceAccountRef: gcp-sa-json
 
-# ------------------------------------------------------------
-# Runtime
-# ------------------------------------------------------------
+
 runtime:
   image:
     uri: "gcr.io/apigee-release/hybrid/apigee-runtime"
     tag: "1.16.0"
-  # sizing POC (si quieres lo ajustamos luego)
-  #cwcAppend:
-  #  resources:
-  #    requests:
-  #      memory: 4Gi
-  #    limits:
-  #      memory: 6Gi
+

@@ -16,10 +16,7 @@ spec:
       recurse: true
 
   destination:
-    # Opción 1 (recomendada): usar el "name" del cluster tal como lo tengas registrado en Argo CD
     name: clusterapigee
-    # Opción 2: si no usas "name", entonces usa "server: https://...." del API del cluster remoto
-    # server: https://<API_SERVER_CLUSTERAPIGEE>
     namespace: apigee
 
   syncPolicy:
@@ -27,6 +24,4 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-      # No es obligatorio si el Namespace va en el repo (Opción A),
-      # pero no molesta y te evita problemas si el namespace aún no existe.
       - CreateNamespace=true
